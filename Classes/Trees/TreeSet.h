@@ -25,7 +25,7 @@ public:
 
     bool contains(T) const;
 
-    bool contains(const TreeSet &) const; //TODO name
+    bool contains(const TreeSet &) const;
 
     [[nodiscard]] int size() const;
 

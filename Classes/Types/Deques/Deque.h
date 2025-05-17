@@ -16,7 +16,7 @@ public:
 
     ~Deque();
 
-    Deque &map(T F(T)) const; // TODO const
+    Deque &map(T F(T)) const;
 
     Deque &where(bool F(T)) const;
 

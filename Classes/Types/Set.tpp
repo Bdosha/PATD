@@ -164,12 +164,12 @@ Set<T> &Set<T>::where(bool f(T)) {
 }
 
 
-template<class T> // TODO ?
+template<class T>
 bool operator==(const Set<T> &set1, const Set<T> &set2) {
     return set1.size() == set2.size() and set1.contains(set2);
 }
 
-template<class T> // TODO ?
+template<class T>
 bool operator!=(const Set<T> &set1, const Set<T> &set2) {
     return !(set1 == set2);
 }
