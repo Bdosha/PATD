@@ -147,12 +147,12 @@ TreeSet<T> &TreeSet<T>::where(bool f(T)) {
 }
 
 
-template<class T> // TODO ?
+template<class T>
 bool operator==(const TreeSet<T> &TreeSet1, const TreeSet<T> &TreeSet2) {
     return TreeSet1.size() == TreeSet2.size() and TreeSet1.contains(TreeSet2);
 }
 
-template<class T> // TODO ?
+template<class T>
 bool operator!=(const TreeSet<T> &TreeSet1, const TreeSet<T> &TreeSet2) {
     return !(TreeSet1 == TreeSet2);
 }

@@ -19,7 +19,7 @@ public:
 
     bool contains(T) const;
 
-    bool contains(const Set &) const; //TODO name
+    bool contains(const Set &) const;
 
     [[nodiscard]] int size() const;
 
