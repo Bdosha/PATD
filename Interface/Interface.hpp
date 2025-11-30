@@ -10,6 +10,7 @@
 #include "Modules/Set.hpp"
 #include "Modules/BinTree.hpp"
 #include "Modules/TreeSet.hpp"
+#include "Modules/SmartPointers.hpp"
 #include "utils.hpp"
 
 
@@ -26,6 +27,7 @@ inline void showMainMenu() {
     std::cout << "8. Множество (Set)\n";
     std::cout << "9. Бинарное дерево поиска (BinTree)\n";
     std::cout << "10. Множество на бинарном дереве (TreeSet)\n";
+    std::cout << "11. Умные указатели (Smart Pointers)\n";
 
     std::cout << "0. Выход\n";
 }
@@ -64,6 +66,9 @@ inline void handleMainMenuChoice(int choice) {
             break;
         case 10:
             TreeSetModule::run();
+            break;
+        case 11:
+            SmartPointersModule::run();
             break;
         case 0:
             std::cout << "Выход...\n";

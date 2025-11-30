@@ -22,6 +22,8 @@ void print(T *seq) {
 #include "sequences.cpp"
 #include "types.cpp"
 #include "trees.cpp"
+#include "smart_pointers.cpp"
+#include "lazy.cpp"
 
 inline void mainTest() {
     test_C();
@@ -32,6 +34,8 @@ inline void mainTest() {
     test_trees_node();
     test_trees();
     test_tree_set();
+    mainSmartPointersTest();
+    test_lazy();
 }
 
 
