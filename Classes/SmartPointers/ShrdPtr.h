@@ -2,12 +2,10 @@
 #define SHRDPTR_H
 
 #include "UnqPtr.h"
-#include <type_traits>
 #include <stdexcept>
 
 template<class T>
 class ShrdPtr {
-private:
     T *ptr;
     size_t *referenceCount;
 
@@ -152,7 +150,7 @@ public:
         return ptr;
     }
 
-    size_t *getRefCount() const {
+    [[nodiscard]] size_t *getRefCount() const {
         return referenceCount;
     }
 
