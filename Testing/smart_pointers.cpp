@@ -1,5 +1,4 @@
 #include "../Classes/SmartPointers/SmartPointers.h"
-#include "../Classes/Sequences/SmartSequence.h"
 #include "../Classes/Sequences/Array/ArraySequences.h"
 #include "../Classes/Sequences/LinkedList/basic/ListSequence.h"
 #include <iostream>
@@ -288,32 +287,6 @@ void testMsPtrArithmetic() {
     std::cout << std::endl;
 }
 
-void testSmartSequence() {
-    std::cout << "--- Проверка SmartSequence ---\n";
-
-    Sequence<int> *seq = new MutableArraySequence<int>();
-    seq->append(1);
-    seq->append(2);
-    seq->append(3);
-
-    SmartSequence<int> smartSeq(seq);
-    testing("SmartSequence create", smartSeq.getSize() == 3);
-    testing("SmartSequence get", smartSeq.get(0) == 1 && smartSeq.get(2) == 3);
-
-    smartSeq.append(4);
-    testing("SmartSequence append", smartSeq.getSize() == 4 && smartSeq.get(3) == 4);
-
-    // Проверяем счетчик до копирования
-    testing("SmartSequence before copy", smartSeq.getSequenceUseCount() == 1);
-    
-    SmartSequence<int> smartSeq2 = smartSeq;
-    testing("SmartSequence copy", smartSeq2.getSize() == 4);
-    
-    // После копирования должно быть 2 ссылки: smartSeq.sequence и smartSeq2.sequence
-    testing("SmartSequence shared", smartSeq.getSequenceUseCount() == 2);
-
-    std::cout << std::endl;
-}
 
 void testNullPtrHandling() {
     std::cout << "--- Проверка обработки nullptr ---\n";
@@ -373,7 +346,6 @@ inline void mainSmartPointersTest() {
     testMemorySpanPointers();
     testMsPtrBasic();
     testMsPtrArithmetic();
-    testSmartSequence();
     testNullPtrHandling();
     testEdgeCases();
 }

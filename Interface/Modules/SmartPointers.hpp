@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../Classes/SmartPointers/SmartPointers.h"
-#include "../../Classes/Sequences/SmartSequence.h"
 #include "../../Classes/Sequences/Array/ArraySequences.h"
 #include "../../Testing/Testing.h"
 #include "../../Testing/smart_pointers_perf.cpp"
@@ -136,21 +135,6 @@ namespace SmartPointersModule {
         seq->append(4);
         seq->append(5);
 
-        SmartSequence<int> smartSeq(seq);
-        std::cout << "Создан SmartSequence с размером: " << smartSeq.getSize() << "\n";
-        std::cout << "Количество ссылок на Sequence: " << smartSeq.getSequence().useCount() << "\n";
-
-        std::cout << "Элементы: ";
-        for (int i = 0; i < smartSeq.getSize(); i++) {
-            std::cout << smartSeq.get(i) << " ";
-        }
-        std::cout << "\n";
-
-        smartSeq.append(6);
-        std::cout << "После добавления элемента, размер: " << smartSeq.getSize() << "\n";
-
-        SmartSequence<int> smartSeq2 = smartSeq;
-        std::cout << "После копирования, количество ссылок: " << smartSeq.getSequence().useCount() << "\n";
 
         pause();
     }
