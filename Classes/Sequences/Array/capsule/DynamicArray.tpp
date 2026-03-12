@@ -7,7 +7,8 @@ DynamicArray<T>::DynamicArray() {
     size = 0;
     capacity = 1;
     begin = 0;
-    items = new T[size];
+    usesMalloc = false;
+    items = new T[1];  // Исправлено: выделяем минимум 1 элемент вместо 0
 }
 
 template<class T>
@@ -16,16 +17,19 @@ void DynamicArray<T>::init(unsigned int size) {
         this->size = 0;
         capacity = 1;
         begin = 0;
-        items = new T[size];
-
+        usesMalloc = false;
+        items = new T[1];  // Исправлено: выделяем минимум 1 элемент вместо 0
         return;
     }
     this->size = size;
     this->capacity = size / 2 * 4;
+    if (this->capacity < size) {
+        this->capacity = size * 2;  // Убеждаемся, что capacity достаточно
+    }
     begin = size / 2;
-
-    // items = new T[size];
-    items = (T *) malloc(capacity * sizeof(T));
+    usesMalloc = false;  // Используем new[] для консистентности
+    // Выделяем память через new[] вместо malloc для правильной инициализации
+    items = new T[capacity];
 }
 
 
@@ -41,24 +45,30 @@ unsigned int DynamicArray<T>::getSize() const {
 
 template<class T>
 DynamicArray<T>::DynamicArray(const int size) {
+    usesMalloc = false;  // Будет установлено в init()
     init(size);
 }
 
 template<class T>
 DynamicArray<T>::~DynamicArray() {
-    delete[] items;
+    if (items != nullptr) {
+        // Теперь всегда используем new[], поэтому всегда delete[]
+        delete[] items;
+        items = nullptr;
+    }
 }
 
 template<class T>
 DynamicArray<T>::DynamicArray(const T *items, const int count) {
+    usesMalloc = false;  // Будет установлено в init()
     init(count);
     copy(items, count);
 }
 
 template<class T>
 DynamicArray<T>::DynamicArray(DynamicArray &other) {
+    usesMalloc = false;  // Будет установлено в init()
     int size = other.getSize();
-
     init(size);
     for (int i = 0; i < size; i++) {
         get(i) = other[i];
@@ -113,7 +123,10 @@ DynamicArray<T> &DynamicArray<T>::resize(const unsigned int newSize) {
     for (int i = 0; i < temp; ++i)
         items[i + begin] = oldItems[i + oldBegin];
 
-    delete[] oldItems;
+    // Освобождаем старую память (теперь всегда new[])
+    if (oldItems != nullptr) {
+        delete[] oldItems;
+    }
 
     return *this;
 }
@@ -135,22 +148,26 @@ bool DynamicArray<T>::contains(T value) const {
 
 template<class T>
 DynamicArray<T> &DynamicArray<T>::remove(int index) {
-    auto newData = (T *) malloc((size - 1) * sizeof(T));
-
-
+    // Используем resize для правильного управления памятью
+    // Создаем временный массив для хранения элементов
+    T *temp = new T[size - 1];
     int flag = 0;
     for (int i = 0; i < size; i++) {
         if (i == index) {
             flag = 1;
             continue;
         }
-        newData[i - flag] = get(i);
+        temp[i - flag] = get(i);
     }
-    delete items;
+    
+    // Освобождаем старую память (теперь всегда new[])
+    delete[] items;
+    
     begin = 0;
     size--;
-    items = newData;
-    resize(size);
+    usesMalloc = false;  // Всегда false теперь
+    items = temp;
+    capacity = size > 0 ? size : 1;
     return *this;
 }
 

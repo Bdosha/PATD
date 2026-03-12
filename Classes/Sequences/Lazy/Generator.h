@@ -2,78 +2,107 @@
 #define GENERATOR_H
 
 #include "../Sequence.h"
+#include <functional>
 
 template<class T>
-class Generator : public Sequence<T> {
-private:
-    T (*generateFunc)(int index);
-    T startValue;
-    T stepValue;
-    bool isRangeGenerator;
+class LazySequence;
 
-    Sequence<T> *clone() override;
+enum class ModificationType {
+    APPEND,
+    INSERT,
+    REMOVE,
+    APPEND_SEQUENCE,
+    INSERT_SEQUENCE,
+    REMOVE_SEQUENCE
+};
 
-    Sequence<T> *instance() override;
+template<class T>
+struct Modification {
+    ModificationType type;
+    size_t index; // позиция для Insert/Remove, игнорируется для Append
+    T item; // для операций с одним элементом
+    Sequence<T> *sequence; // для операций с последовательностью (nullptr если не используется)
+    bool hasSequence;
+
+    Modification() : type(ModificationType::APPEND), index(0), hasSequence(false), sequence(nullptr) {
+    }
+};
+
+template<class T>
+class Generator {
+    friend class LazySequence<T>;
 
 public:
-    // Конструктор с функцией генерации
-    explicit Generator(T (*func)(int));
+    Generator(LazySequence<T> *owner,
+              std::function<T(Sequence<T> *)> rule,
+              Sequence<T> *initialElements);
 
-    // Конструктор для range
-    Generator(T start, T step);
+    Generator(LazySequence<T> *owner,
+              size_t baseIndex,
+              Sequence<T> *baseSequence,
+              const Modification<T> &modification);
 
-    // Конструктор для repeat
-    explicit Generator(T value);
+    Generator(const Generator<T> &other);
 
-    ~Generator() override = default;
+    ~Generator();
 
-    T &get(int index) const override;
+    T GetNext();
 
-    [[nodiscard]] int getSize() const override;
+    [[nodiscard]] bool HasNext() const;
 
-    Sequence<T> *construct() override;
+    Generator *Append(const T &item) const;
 
-    Sequence<T> *inSet(int index, T item) override;
+    Generator *Append(Sequence<T> *items) const;
 
-    Sequence<T> *inAppend(T item) override;
+    Generator *Insert(const T &item, size_t index) const;
 
-    Sequence<T> *inPrepend(T item) override;
+    Generator *Insert(Sequence<T> *items, size_t index) const;
 
-    Sequence<T> *inInsertAt(T item, int index) override;
+    Generator *Remove(size_t index) const;
 
-    Sequence<T> *inGetSubsequence(int startIndex, int endIndex) override;
+    Generator *Remove(size_t startIndex, size_t endIndex) const;
 
-    Sequence<T> *inRemove(int index) override;
+    void setInfinite(bool infinite);
 
-    Sequence<T> *set(int index, T value) override;
+    void setHasEnd(bool hasEnd);
 
-    Sequence<T> *append(T item) override;
+    void setEndIndex(size_t index);
 
-    Sequence<T> *prepend(T item) override;
+    void setSimpleSequence(bool simple);
 
-    Sequence<T> *insertAt(T item, int index) override;
+    void setBaseSequence(Sequence<T> *seq);
 
-    Sequence<T> *getSubsequence(int startIndex, int endIndex) override;
+    Sequence<T> *getBaseSequence() const;
 
-    Sequence<T> *remove(int index) override;
+    void setOwner(LazySequence<T> *newOwner);
 
-    bool contains(T item) override;
+private:
+    LazySequence<T> *owner; // ссылка на хозяина
+    std::function<T(Sequence<T> *)> generationRule; // правило порождения
+    Sequence<T> *initialElements; // начальные элементы
+    Sequence<T> *previousElements; // очередь фиксированной длины для предшествующих элементов
+    size_t maxHistorySize; // максимальный размер истории (для рекуррентных правил)
+    size_t currentIndex; // текущий индекс в генерации
+    bool isInfinite; // является ли последовательность бесконечной
+    bool hasEnd; // есть ли конец у последовательности
+    size_t endIndex; // индекс конца (если hasEnd == true)
 
-    int find(T item) override;
+    // Для операций модификации и простых последовательностей
+    bool isModificationGenerator; // является ли генератор модификационным
+    size_t baseIndex; // базовая позиция для модификации
+    Sequence<T> *baseSequence; // базовая последовательность (для модификаций и простых последовательностей)
+    Modification<T> modification; // операция модификации
+    bool isSimpleSequence; // является ли генератор простой последовательностью (не рекуррентной)
 
-    T &getFirst() override;
+    void initHistoryQueue();
 
-    T &getLast() override;
+    void updateHistoryQueue(const T &newElement);
 
-    T &operator[](int index) override;
+    T computeNext();
 
-    // Статические методы для создания генераторов
-    static Generator<T> *range(T start, T step);
-
-    static Generator<T> *repeat(T value);
+    T computeNextWithModifications();
 };
 
 #include "Generator.tpp"
 
-#endif
-
+#endif //GENERATOR_H

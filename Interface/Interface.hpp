@@ -11,6 +11,9 @@
 #include "Modules/BinTree.hpp"
 #include "Modules/TreeSet.hpp"
 #include "Modules/SmartPointers.hpp"
+#include "Modules/LazySequence.hpp"
+#include "Modules/Streams.hpp"
+#include "Modules/TuringTape.hpp"
 #include "utils.hpp"
 
 
@@ -28,6 +31,9 @@ inline void showMainMenu() {
     std::cout << "9. Бинарное дерево поиска (BinTree)\n";
     std::cout << "10. Множество на бинарном дереве (TreeSet)\n";
     std::cout << "11. Умные указатели (Smart Pointers)\n";
+    std::cout << "12. Ленивая последовательность (LazySequence)\n";
+    std::cout << "13. Потоки (Streams)\n";
+    std::cout << "14. Лента Тьюринга (TuringTape)\n";
 
     std::cout << "0. Выход\n";
 }
@@ -69,6 +75,15 @@ inline void handleMainMenuChoice(int choice) {
             break;
         case 11:
             SmartPointersModule::run();
+            break;
+        case 12:
+            LazySequenceModule::run();
+            break;
+        case 13:
+            StreamsModule::run();
+            break;
+        case 14:
+            TuringTapeModule::run();
             break;
         case 0:
             std::cout << "Выход...\n";

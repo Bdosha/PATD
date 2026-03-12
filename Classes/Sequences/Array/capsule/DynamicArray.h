@@ -44,6 +44,7 @@ private:
     unsigned int begin;
     unsigned int capacity;
     unsigned int size;
+    bool usesMalloc;  // флаг для отслеживания способа выделения памяти
 
 
     void init(unsigned int size);

@@ -1,6 +1,8 @@
 #ifndef SEQUENCE_H
 #define SEQUENCE_H
 
+#include <iostream>
+
 template<class T>
 class Sequence {
 public:

@@ -17,8 +17,7 @@ template<class T>
 Sequence<T> *Sequence<T>::concat(Sequence *seq) {
     Sequence *result = clone();
 
-    int size = seq->getSize();
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < seq->getSize(); i++) {
         result->inAppend(seq->get(i));
     }
 
